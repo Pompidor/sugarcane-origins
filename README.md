@@ -1,5 +1,6 @@
 # sugarcane-origins
 
-Scripts used to produce some of the results of Pompidor et al, 2020.
+Scripts used to determine the origins of SNPs in the publication 'Three founding ancestral genomes involved in the origin of sugarcane'.
 
-Completion in progress.. (name of the scripts, commands to tuse them, etc)
+How to cite: Pompidor et al, 2020,  Annals of Botany under review .
+
