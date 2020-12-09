@@ -17,7 +17,7 @@ min_SNP_acc_present = 0 # minimum acc with the same snp to be diagnostic
 
 
 
-color_acc_from_bac = True # if we color color accs from bacs or inversed
+color_acc_from_bac = True # if we color accs from bacs or inversed
 
 
 ################################
@@ -214,13 +214,13 @@ order_acc = {} # Key : Nombre correspond a la la position d'apparition dans le v
 column_tab = 0
 
 for line in vcf_input:
-	#Copie entete
+	#Header copy
 	if(line[0] == '#' and line[1] == '#'):
 		vcf_output.write(line)
 	else:
 		line_split = re.split(r'\t+', line)
 
-		#Intialisation ligne avec accessions
+		#Line initialization with accessions
 		if(line_split[0] == '#CHROM'):
 			cpt = 0
 			for word in line_split:
@@ -257,12 +257,12 @@ for line in vcf_input:
 			column_tab +=1
 
 
-		##Etude SNP	
+		##SNP study	
 		else :
 			cpt = 0
 			for word in line_split:
-				if cpt > 8 : # decalage jusqu'a la premiere donnee de type ./.:24,0,0:24:0
-					for key in dict_names: #mise a jour dict_names
+				if cpt > 8 : # shift to first data of type ./.:24,0,0:24:0
+					for key in dict_names: #update dict_names
 						if(word[-1:] == '\n') :
 							if order_acc[cpt-9] in dict_names[key]:
 								dict_names[key][order_acc[cpt-9]]=word[:-1]
@@ -271,7 +271,7 @@ for line in vcf_input:
 								dict_names[key][order_acc[cpt-9]]=word
 				cpt+=1
 
-			stats = {} # Key : Groupe ; Sub-key : donnee de type ./. ou 0/1 ; Value : nb d'acessions de ce type
+			stats = {} # Key : Groupe ; Sub-key : data or type ./. or 0/1 ; Value : accessions number of this type
 			for key in dict_names:
 				stats[key] = {}
 				for acc in dict_names[key]:
@@ -282,7 +282,7 @@ for line in vcf_input:
 							stats[key][dict_names[key][acc][:3]] = 1
 
 
-			# Calcule le nombre d'accessions avec une donnee
+			# Compute the number of accession with a data
 			val_acc = 0
 			val_bac = 0
 
@@ -295,9 +295,9 @@ for line in vcf_input:
 					if group == '#bacs' and snp != '.' :
 						val_acc += stats[group][snp]
 
-			# Si nb accessions	cc suffisant, recherche des snp carac
+			# If number accession cc enough,looking for specifique snp
 			if val_bac >= min_bacs_present and val_acc >= min_accs_present:
-				carac_snp = {} # Key : donnee poly ex 0/1 ou 0/0 ; Value : liste des groupes ayant des accessions comme ca
+				carac_snp = {} # Key : poly data ex 0/1 ou 0/0 ; Value : list of groups with accessions like this
 				for group in stats:
 					total_snp = 0
 					if group != '#bacs':
@@ -312,10 +312,10 @@ for line in vcf_input:
 									carac_snp[snp].append(group)
 
 
-				if(len(list(carac_snp.keys())) >= 1): # si on a au moins deux poly differents
+				if(len(list(carac_snp.keys())) >= 1): # if we have at lest 2 different poly
 
 					diff = 0
-					carac = {} #groupe:liste [valeurs] | pour les groupes et snp caracteristiques
+					carac = {} #groupe:liste [valeurs] | for the groups and specific SNP
 
 					for snp_1 in carac_snp:
 						if len(carac_snp[snp_1]) == 1 :
@@ -375,7 +375,7 @@ for line in vcf_input:
 								column_tab=0
 
 							line_tab = 0
-							feuille.write(line_tab, column_tab, str(line_split[1])) # ecriture position
+							feuille.write(line_tab, column_tab, str(line_split[1])) # position writing
 							line_tab+=1
 
 							
@@ -503,7 +503,7 @@ for line in vcf_input:
 										if group == "#bacs" :
 											bool_test = 1
 
-											for el in flat_list_snp_value : #snp_value : list(carac.values()) # extrait snp distinctif
+											for el in flat_list_snp_value : #snp_value : list(carac.values()) # extract specific SNP
 												for group_bis in carac:
 													if(dict_names[group][acc] != '.'):
 														if (any(dict_names[group][acc][0] in snp for snp in carac[group_bis]) or any(dict_names[group][acc][2] in snp for snp in carac[group_bis])) and bool_test:
@@ -514,7 +514,7 @@ for line in vcf_input:
 
 															bool_test=0
 
-											if bool_test: #si bac non caracteristique, on ne le colore pas
+											if bool_test: #if BAC not specific, we don't color it
 
 												if not acc_number:
 													feuille.write(line_tab, column_tab, str(snp_output), border_THICK)
